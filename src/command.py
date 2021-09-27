@@ -20,7 +20,7 @@ def check_if_author(document):
     """
     return bool('author_id' in document.keys())
 def read_json(arg):
-    """ 
+    """
     Function to handle reading a JSON File and updating
     or creating new entries in the MongoDB database
     """
