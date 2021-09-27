@@ -70,7 +70,9 @@ def writeJson(args):
                 with open(args.JSON_File_Out, "w") as outfile:
                     (json.dump(str(x), outfile, indent = 4))
                     break
-
+#===============================================================================
+# This function handles scraping, transferring data to MongoDB's database for the amount of books that the user specifies.
+#===============================================================================
 def runBookHandler(URL, args):
     saveBookUrls = []
     for x in range(args.Number_Of_Books):
@@ -92,6 +94,9 @@ def runBookHandler(URL, args):
         print('Ended this scrape')
     return retArr[4]    
 
+#===============================================================================
+# This function handles scraping, transferring data to MongoDB's database for the amount of Authors that the user specifies.
+#===============================================================================
 def runAuthorHandler(URL, args):
     saveAuthorUrls = []
     for x in range(args.Number_Of_Authors):
