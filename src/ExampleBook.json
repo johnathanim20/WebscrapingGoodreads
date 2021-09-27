@@ -1,0 +1,1 @@
+{"book_url": "www.example.com", "title": "exampleTitle", "book_id": "exampleID", "ISBN": "exampleISBN", "author_url": "www.author.com", "author": "exampleAuthor", "rating": "exampleRating", "rating_count": "exampleRatingCount", "review_count": "exampleReviewCount", "image_url": "www.exampleImageUrl.com", "similar_books": ["book1", "book2", "book3"]}
