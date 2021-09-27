@@ -1,73 +1,65 @@
-'''
-Created on Sep 26, 2021
-
-@author: johna
-'''
+"""
+Tests
+"""
 import unittest
 import time
-from Scraper import scrapeBookPage
-from Scraper import scrapeAuthorPage
-from Scraper import urlInRobotsFile
-from CommandLine import checkIfAuthor
-from CommandLine import checkIfBook
+from scraper import scrape_book_page, scrape_author_page, url_in_robots_file
+from command import check_if_author, check_if_book
 
 class Test(unittest.TestCase):
     
-    def test_UrlInRobotsFile(self):
+    def test_url_in_robots_file(self):
         URL = 'https://www.goodreads.com/book/show/52976360-coronavirus-and-christ'
-        flag = urlInRobotsFile(URL)
+        flag = url_in_robots_file(URL)
         self.assertEqual(flag, True)
     
-    def test_UrlInRobotsFile2(self):
+    def test_url_in_robots_file2(self):
         URL = 'https://www.goodreads.com/book/show/3735293-clean-code'
-        flag = urlInRobotsFile(URL)
+        flag = url_in_robots_file(URL)
         self.assertEqual(flag, False)
         
-    def test_ScrapeBookPage(self):
-        URL = 'https://www.goodreads.com/book/show/3735293-clean-code'
-        retArr = scrapeBookPage(URL)
-        self.assertEqual(retArr[0], 'https://www.goodreads.com/book/show/3735293-clean-code')
-        self.assertEqual(retArr[1], 'Clean Code: A Handbook of Agile Software Craftsmanship')
-        self.assertEqual(retArr[2], '3735293')
-        self.assertEqual(retArr[3], '9780132350884')
-        self.assertEqual(retArr[4], 'https://www.goodreads.com/author/show/45372.Robert_C_Martin')
-        self.assertEqual(retArr[5], 'Robert C. Martin')
-        #self.assertEqual(retArr[6], '4.40')
-        #self.assertEqual(retArr[7], '17127')
-        #self.assertEqual(retArr[8], '1030')
-        self.assertEqual(retArr[9], 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1436202607l/3735293._SX318_.jpg')
+    def test_scrape_book_page(self):
+        url = 'https://www.goodreads.com/book/show/3735293-clean-code'
+        ret_arr = scrape_book_page(url)
+        self.assertEqual(ret_arr[0], 'https://www.goodreads.com/book/show/3735293-clean-code')
+        self.assertEqual(ret_arr[1], 'Clean Code: A Handbook of Agile Software Craftsmanship')
+        self.assertEqual(ret_arr[2], '3735293')
+        self.assertEqual(ret_arr[3], '9780132350884')
+        self.assertEqual(ret_arr[4], 'https://www.goodreads.com/author/show/45372.Robert_C_Martin')
+        self.assertEqual(ret_arr[5], 'Robert C. Martin')
+        self.assertEqual(ret_arr[9], 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1436202607l/3735293._SX318_.jpg')
         time.sleep(40)
         
-    def test_ScrapeBookPage2(self):
-        URL = 'https://www.goodreads.com/author/show/45372.Robert_C_Martin'
+    def test_scrape_book_page2(self):
+        url = 'https://www.goodreads.com/author/show/45372.Robert_C_Martin'
         try:
-            retArr = scrapeBookPage(URL)
+            ret_arr = scrape_book_page(url)
         except:
-            retArr = None
-        self.assertEqual(retArr, None)
+            ret_arr = None
+        self.assertEqual(ret_arr, None)
 
         
-    def test_ScrapeAuthorPage(self):
-        URL = 'https://www.goodreads.com/author/show/45372.Robert_C_Martin'
-        retArr = scrapeAuthorPage(URL)
-        self.assertEqual(retArr[0], 'Robert C. Martin')
-        self.assertEqual(retArr[1], 'https://www.goodreads.com/author/show/45372.Robert_C_Martin')
-        self.assertEqual(retArr[2], '45372')
+    def test_scrape_author_page(self):
+        url = 'https://www.goodreads.com/author/show/45372.Robert_C_Martin'
+        ret_arr = scrape_author_page(url)
+        self.assertEqual(ret_arr[0], 'Robert C. Martin')
+        self.assertEqual(ret_arr[1], 'https://www.goodreads.com/author/show/45372.Robert_C_Martin')
+        self.assertEqual(ret_arr[2], '45372')
         #self.assertEqual(retArr[3], '4.34')
         #self.assertEqual(retArr[4], '31522')
         #self.assertEqual(retArr[5], '2093')
-        self.assertEqual(retArr[6], 'https://images.gr-assets.com/authors/1490470967p5/45372.jpg')
+        self.assertEqual(ret_arr[6], 'https://images.gr-assets.com/authors/1490470967p5/45372.jpg')
         time.sleep(40)
 
-    def test_ScrapeAuthorPage2(self):
-        URL = 'https://www.goodreads.com/book/show/3735293-clean-code'
+    def test_scrape_author_page2(self):
+        url = 'https://www.goodreads.com/book/show/3735293-clean-code'
         try:
-            retArr = scrapeAuthorPage(URL)
+            ret_arr = scrape_author_page(url) 
         except:
-            retArr = None
-        self.assertEqual(retArr, None)
+            ret_arr = None
+        self.assertEqual(ret_arr, None)
         
-    def test_handleCheckAuthor(self):
+    def test_handle_check_author(self):
         author = {"name": 'bob',
             "author_url" : 'bob.com',
             "author_id" : '1234',
@@ -77,10 +69,10 @@ class Test(unittest.TestCase):
             "image_url" : 'bobimg.com',
             "related_authors" : '',
             "author_books" : ''}
-        flag = checkIfAuthor(author)
+        flag = check_if_author(author)
         self.assertEqual(flag, True)
             
-    def test_handleCheckAuthor2(self):
+    def test_handle_check_author2(self):
         book = {"book_url": 'book.com',
             "title" : 'book',
             "book_id" : '123',
@@ -92,10 +84,10 @@ class Test(unittest.TestCase):
             "review_count" : '135',
             "image_url" : 'bookimg.com',
             "similar_books" : ''}
-        flag = checkIfAuthor(book)
+        flag = check_if_author(book)
         self.assertEqual(flag, False)
                 
-    def test_handleCheckBook(self):
+    def test_handle_check_book(self):
         book = {"book_url": 'book.com',
             "title" : 'book',
             "book_id" : '123',
@@ -107,10 +99,10 @@ class Test(unittest.TestCase):
             "review_count" : '135',
             "image_url" : 'bookimg.com',
             "similar_books" : ''}
-        flag = checkIfBook(book)
+        flag = check_if_book(book)
         self.assertEqual(flag, True)
         
-    def test_handleCheckBook2(self):
+    def test_handle_check_book2(self):
         author = {"name": 'bob',
             "author_url" : 'bob.com',
             "author_id" : '1234',
@@ -120,8 +112,7 @@ class Test(unittest.TestCase):
             "image_url" : 'bobimg.com',
             "related_authors" : '',
             "author_books" : ''}
-        flag = checkIfBook(author)
+        flag = check_if_book(author)
         self.assertEqual(flag, False)
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
