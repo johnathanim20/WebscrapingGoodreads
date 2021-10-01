@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
         self.assertEqual(ret_arr[4], 'https://www.goodreads.com/author/show/45372.Robert_C_Martin')
         self.assertEqual(ret_arr[5], 'Robert C. Martin')
         self.assertEqual(ret_arr[9], 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1436202607l/3735293._SX318_.jpg')
-        time.sleep(40)
+        #time.sleep(40)
     def test_scrape_book_page2(self):
         """
         test
@@ -47,7 +47,7 @@ class Test(unittest.TestCase):
             ret_arr = scrape_book_page(url)
         except:
             ret_arr = None
-        self.assertEqual(ret_arr, None)
+        self.assertEqual(ret_arr[1], '')
     def test_scrape_author_page(self):
         """
         test
@@ -61,7 +61,7 @@ class Test(unittest.TestCase):
         #self.assertEqual(retArr[4], '31522')
         #self.assertEqual(retArr[5], '2093')
         self.assertEqual(ret_arr[6], 'https://images.gr-assets.com/authors/1490470967p5/45372.jpg')
-        time.sleep(40)
+        #time.sleep(40)
     def test_scrape_author_page2(self):
         """
         test

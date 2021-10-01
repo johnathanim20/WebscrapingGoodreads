@@ -30,52 +30,91 @@ def scrape_book_page(url):
     Returns all the necessary values required for data storage.
     """
     book_url = url
-    request = requests.get(url)
-    soup = bs(request.text, 'html.parser')
-    title = soup.find('h1', id='bookTitle').string.strip()
-    book_id = soup.find('input', id='book_id')['value']
-    if soup.find('span', itemprop='isbn').string is None:
-        isbn = "does not exist"
-    isbn = soup.find('span', itemprop='isbn').string
-    author_url = soup.find('a', class_='authorName')['href']
-    author = soup.find('span', itemprop='name').string
-    rating = soup.find('span', itemprop='ratingValue').string.strip()
-    rating_count = soup.find('meta', itemprop='ratingCount')['content']
-    review_count = soup.find('meta', itemprop='reviewCount')['content']
-    image_url = soup.find('img', id='coverImage')['src']
-    temp = soup.findAll('li', class_='cover')
+    title =''
+    book_id = ''
+    isbn = ''
+    author_url = ''
+    author = ''
+    rating = ''
+    rating_count = ''
+    review_count = ''
+    image_url = ''
     similar_books = []
-    for search in temp:
-        for child in search.find_all('a'):
-            similar_books.append(child['href'])
-    return book_url, title, book_id, isbn, author_url, author, rating, rating_count, review_count, image_url, similar_books
+    try:
+        request = requests.get(url)
+        soup = bs(request.text, 'html.parser')
+        if soup.find('h1', id='bookTitle') is not None:
+            title = soup.find('h1', id='bookTitle').string.strip()
+        if soup.find('input', id='book_id') is not None:
+            book_id = soup.find('input', id='book_id')['value']
+        if soup.find('span', itemprop='isbn') is not None:
+            isbn = soup.find('span', itemprop='isbn').string
+        if soup.find('a', class_='authorName') is not None:
+            author_url = soup.find('a', class_='authorName')['href']
+        if soup.find('span', itemprop='name') is not None:
+            author = soup.find('span', itemprop='name').string
+        if soup.find('span', itemprop='ratingValue') is not None:
+            rating = soup.find('span', itemprop='ratingValue').string.strip()
+        if soup.find('meta', itemprop='ratingCount') is not None:
+            rating_count = soup.find('meta', itemprop='ratingCount')['content']
+        if soup.find('meta', itemprop='reviewCount') is not None:
+            review_count = soup.find('meta', itemprop='reviewCount')['content']
+        if soup.find('img', id='coverImage') is not None:
+            image_url = soup.find('img', id='coverImage')['src']
+        if soup.findAll('li', class_='cover') is not None:
+            temp = soup.findAll('li', class_='cover')
+        similar_books = []
+        for search in temp:
+            for child in search.find_all('a'):
+                similar_books.append(child['href'])
+        return book_url, title, book_id, isbn, author_url, author, rating, rating_count, review_count, image_url, similar_books
+    except AttributeError:
+        print('blocked')
 def scrape_author_page(url):
     """
     Function that handles parsing and scraping an author page from
     a generic GoodReads.com author page.
     Returns all the necessary values required for data storage.
     """
-    request = requests.get(url)
-    soup = bs(request.text, 'html.parser')
-    name = soup.find('span', itemprop='name').string
     author_url = url
     author_id = re.findall("\d+", url)[0]
-    rating = soup.find('span', itemprop='ratingValue').string
-    rating_count = soup.find('span', class_="value-title")['title']
-    review_count = soup.find('span', class_='count').find('span')['title']
-    image_url = soup.find('div', class_='leftContainer authorLeftContainer').find('img')['src']
-    tmp = soup.find('div', class_='hreview-aggregate').findAll('a')[1]['href']
-    inp = 'http://goodreads.com'
-    inp += tmp
-    request2 = requests.get(inp)
-    soup2 = bs(request2.text, 'html.parser')
-    related_authors = []
-    authors_urls = soup2.findAll('a', class_="gr-h3 gr-h3--serif gr-h3--noMargin")
-    for authors in authors_urls:
-        related_authors.append(authors['href'])
-    temp = soup.findAll('td', width ='5%')
-    author_books = []
-    for search in temp:
-        for child in search.findAll('a'):
-            author_books.append(child['href'])
-    return name, author_url, author_id, rating, rating_count, review_count, image_url, related_authors, author_books
+    name = ''
+    rating = ''
+    rating_count = ''
+    review_count = ''
+    image_url = ''
+    related_authors = ''
+    author_books = ''
+    try:
+        request = requests.get(url)
+        soup = bs(request.text, 'html.parser')
+        if soup.find('span', itemprop='name') is not None:
+            name = soup.find('span', itemprop='name').string
+        if soup.find('span', itemprop='ratingValue') is not None:
+            rating = soup.find('span', itemprop='ratingValue').string
+        if soup.find('span', class_="value-title") is not None:
+            rating_count = soup.find('span', class_="value-title")['title']
+        if soup.find('span', class_='count') is not None:
+            review_count = soup.find('span', class_='count').find('span')['title']
+        if soup.find('div', class_='leftContainer authorLeftContainer') is not None:
+            image_url = soup.find('div', class_='leftContainer authorLeftContainer').find('img')['src']
+        if soup.find('div', class_='hreview-aggregate') is not None:
+            tmp = soup.find('div', class_='hreview-aggregate').findAll('a')[1]['href']
+            inp = 'http://goodreads.com'
+            inp += tmp
+            request2 = requests.get(inp)
+            soup2 = bs(request2.text, 'html.parser')
+            related_authors = []
+            if soup2.findAll('a', class_="gr-h3 gr-h3--serif gr-h3--noMargin") is not None:
+                authors_urls = soup2.findAll('a', class_="gr-h3 gr-h3--serif gr-h3--noMargin")
+            for authors in authors_urls:
+                related_authors.append(authors['href'])
+            if soup.findAll('td', width ='5%') is not None:
+                temp = soup.findAll('td', width ='5%')
+                author_books = []
+            for search in temp:
+                for child in search.findAll('a'):
+                    author_books.append(child['href'])
+        return name, author_url, author_id, rating, rating_count, review_count, image_url, related_authors, author_books
+    except AttributeError:
+        print('blocked')
