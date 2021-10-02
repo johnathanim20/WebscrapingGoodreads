@@ -67,5 +67,4 @@ def database_author_handler(ret_arr1):
         collection.update(author, author, upsert = True)
     
 if __name__ == "__main__":
-    print(get_key())
-    
+    print('test')
