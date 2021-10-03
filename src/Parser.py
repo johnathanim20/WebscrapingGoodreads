@@ -22,15 +22,13 @@ def handleDotCommand(string, string2):
     books = data_base["Books"]
     authors = data_base["Authors"]
     ret_arr1 = []
-    ret_arr2 = []
     if (string2 == 'book'):
         for book in books.find():   
             ret_arr1.append(book[string])
-        print(ret_arr1)
     if (string2 == 'author'):
         for author in authors.find():
-            ret_arr2.append(author[string])
-        print(ret_arr2)
+            ret_arr1.append(author[string])
+    return ret_arr1, string2
 
 def parseAfterColon(string):
     try:
@@ -64,10 +62,8 @@ def handleNOTColonCommand(string, string2, search):
     books = data_base["Books"]
     authors = data_base["Authors"]
     ret_arr1 = []
-    ret_arr2 = []
     if (string2 == 'book'):
         for book in books.find():   
-            
             if search not in book[string]:
                 print("The search value has not been found at : " + book['book_url'])
                 ret_arr1.append(book[string])
@@ -76,9 +72,9 @@ def handleNOTColonCommand(string, string2, search):
         for author in authors.find():
             if search not in author[string]:
                 print("The search value has not been found at : " + author['author_url'])
-                ret_arr2.append(author[string])
+                ret_arr1.append(author[string])
         #print(ret_arr2)
-
+    return ret_arr1, string2
 def parseAfterQuotes(string):
     try:
         find = re.compile(r"(?<=\')(.*)")
@@ -91,7 +87,6 @@ def handleQuotesCommand(string, string2, exact):
     books = data_base["Books"]
     authors = data_base["Authors"]
     ret_arr1 = []
-    ret_arr2 = []
     if (string2 == 'book'):
         for book in books.find():   
             if book[string] == exact:
@@ -101,14 +96,14 @@ def handleQuotesCommand(string, string2, exact):
         for author in authors.find():
             if author[string] == exact:
                 print("The exact value has been found at : " + author['author_url']) 
-                ret_arr2.append(author[string])
+                ret_arr1.append(author[string])
+    return ret_arr1, string2
 def handleNOTQuotesCommand(string, string2, exact):
     client = pymongo.MongoClient(get_key())
     data_base = client['GoodReadData']
     books = data_base["Books"]
     authors = data_base["Authors"]
     ret_arr1 = []
-    ret_arr2 = []
     if (string2 == 'book'):
         for book in books.find():   
             if book[string] != exact:
@@ -118,7 +113,8 @@ def handleNOTQuotesCommand(string, string2, exact):
         for author in authors.find():
             if author[string] != exact:
                 print("The exact value has not been found at : " + author['author_url']) 
-                ret_arr2.append(author[string])
+                ret_arr1.append(author[string])
+    return ret_arr1, string2
         
 def parseAfterAND(string):
     try:
@@ -151,17 +147,7 @@ def parseBeforeORAfterColon(string):
         return find
     except:
         return None
-def handleORCommand(string1, string2, exact, search):
-    #if quotes 
-    if handleQuotesCommand(string1, exact) or handleQuotesCommand(string2, exact):
-        return True
-    #if Colons
-    if handleColonCommand(string1, search) or handleColonCommand(string2, search):
-        return True
-    #if Dots
-    if handleDotCommand(string1) or handleDotCommand(string2):
-        return True
-    
+
 def parseAfterGreaterThan(string):
     try:
         find = re.compile(r"(?<=\>)(.*)")
@@ -175,8 +161,6 @@ def handleGreaterThan(string, string2, value):
         books = data_base["Books"]
         authors = data_base["Authors"]
         ret_arr1 = []
-        ret_arr2 = []
-        
         if (string2 == 'book'):
             for book in books.find():   
                 if book[string] > value:
@@ -186,7 +170,8 @@ def handleGreaterThan(string, string2, value):
             for author in authors.find():
                 if author[string] > value:
                     print("A greater value than " + value + " has been found at : " + author['author_url'])
-                    ret_arr2.append(author[string])
+                    ret_arr1.append(author[string])
+    return ret_arr1, string2
         
 
 def parseAfterLessThan(string):
@@ -204,8 +189,6 @@ def handleLessThan(string, string2, value):
         books = data_base["Books"]
         authors = data_base["Authors"]
         ret_arr1 = []
-        ret_arr2 = []
-        
         if (string2 == 'book'):
             for book in books.find():   
                 if book[string] < value:
@@ -215,7 +198,8 @@ def handleLessThan(string, string2, value):
             for author in authors.find():
                 if author[string] < value:
                     print("A lesser value than " + value + " has been found at : " + author['author_url'])
-                    ret_arr2.append(author[string])
+                    ret_arr1.append(author[string])
+    return ret_arr1, string2
 
 def parseAfterDotBeforeColon(string):
     try:
@@ -223,6 +207,89 @@ def parseAfterDotBeforeColon(string):
         return find
     except:
         return None
+    
+def dot(string):
+    if '.' in string and parseAfterColon(string) is None:
+        string1 = parseAfterDot(string)
+        string2 = parseBeforeDot(string)
+        return handleDotCommand(string1, string2)
+        
+def less_than(string):
+    if parseAfterColon(string) and parseAfterLessThan(string):
+        string1 = parseBeforeDot(string)
+        string2 = parseAfterDotBeforeColon(string)
+        string3 = parseAfterLessThan(string)
+        return handleLessThan(string2, string1, string3)
+        
+def greater_than(string):
+    if parseAfterColon(string) and parseAfterGreaterThan(string):
+        string1 = parseBeforeDot(string)
+        string2 = parseAfterDotBeforeColon(string)
+        string3 = parseAfterGreaterThan(string)
+        return handleGreaterThan(string2, string1, string3)
+        
+def and_colon(string):
+    if parseAfterColon(string) and parseBeforeANDAfterColon(string) and parseAfterQuotes(string) is None:
+        string1 = parseBeforeANDAfterColon(string)
+        string2 = parseAfterAND(string)
+        string3 = parseBeforeDot(string)
+        string4 = parseAfterDotBeforeColon(string)
+        return handleColonCommand(string4, string3, string1)
+        return handleColonCommand(string4, string3, string2)
+        
+def and_quotes(string):
+    if parseAfterQuotes(string) and parseBeforeANDAfterColon(string) and parseAfterQuotes(string):
+        string1 = parseBeforeANDAfterColon(string).strip("'")
+        string2 = parseAfterAND(string).strip("'")
+        string3 = parseBeforeDot(string)
+        string4 = parseAfterDotBeforeColon(string)
+        return handleQuotesCommand(string4, string3, string1)
+        return handleQuotesCommand(string4, string3, string2)
+        
+def or_colon(string):
+    if parseAfterColon(string) and parseAfterQuotes(string) is None and parseBeforeORAfterColon(string):
+        string1 = parseBeforeORAfterColon(string)
+        string2 = parseAfterOR(string)
+        string3 = parseBeforeDot(string)
+        string4 = parseAfterDotBeforeColon(string)
+        return handleColonCommand(string4, string3, string1)
+        return handleColonCommand(string4, string3, string2)
+def or_quotes(string):
+    if parseAfterColon(string) and parseAfterQuotes(string) and parseBeforeORAfterColon(string):
+        string1 = parseBeforeORAfterColon(string).strip("'")
+        string2 = parseAfterOR(string).strip("'")
+        string3 = parseBeforeDot(string)
+        string4 = parseAfterDotBeforeColon(string)
+        return handleQuotesCommand(string4, string3, string1)
+        return handleQuotesCommand(string4, string3, string2)
+        
+def not_quote(string):
+    if parseAfterColon(string) and parseAfterNOT(string) and parseAfterQuotes(string):
+        string1 = parseAfterQuotes(string)
+        string2 = parseBeforeDot(string)
+        string3 = parseAfterDotBeforeColon(string)
+        return handleNOTQuotesCommand(string3, string2, string1)
+                               
+def not_colon(string):
+    if parseAfterColon(string) and parseAfterNOT(string):
+        string1 = parseAfterNOT(string)
+        string2 = parseBeforeDot(string)
+        string3 = parseAfterDotBeforeColon(string)
+        return handleNOTColonCommand(string3, string2, string1) 
+        
+def quote(string):
+    if parseAfterColon(string) and parseAfterQuotes(string): 
+        string1 = parseAfterQuotes(string)
+        string2 = parseBeforeDot(string)
+        string3 = parseAfterDotBeforeColon(string)
+        return handleQuotesCommand(string3, string2, string1)
+def colon(string):
+    if (parseAfterColon(string) and parseAfterQuotes(string) is None and parseAfterAND(string) is None and parseAfterLessThan(string) is None 
+            and parseAfterLessThan(string) is None):
+        string1 = parseAfterColon(string)
+        string2 = parseBeforeDot(string)
+        string3 = parseAfterDotBeforeColon(string)
+        return handleColonCommand(string3, string2, string1)
 def main():
     parser = argparse.ArgumentParser(description = 'Parse user Input')
     parser.add_argument('operator', help = "Must use a valid operator containing : '., :, "", AND, OR, NOT, <, >")

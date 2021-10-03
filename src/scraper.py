@@ -68,8 +68,8 @@ def scrape_book_page(url):
             for child in search.find_all('a'):
                 similar_books.append(child['href'])
         return book_url, title, book_id, isbn, author_url, author, rating, rating_count, review_count, image_url, similar_books
-    except AttributeError:
-        print('blocked')
+    except :
+        return None
 def scrape_author_page(url):
     """
     Function that handles parsing and scraping an author page from
@@ -116,5 +116,5 @@ def scrape_author_page(url):
                 for child in search.findAll('a'):
                     author_books.append(child['href'])
         return name, author_url, author_id, rating, rating_count, review_count, image_url, related_authors, author_books
-    except AttributeError:
-        print('blocked')
+    except :
+        return None
