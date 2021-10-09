@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Start Page</title>
+   	</head>
+   	<body>
+   	<h1>  </h1>
+   	<form>
+  		<label>Enter Book ID to Get:</label><br>
+  		<input type="text" id="getbook" name ="getbook" ><br>
+  		<button type = "button" onclick="handleGetBook(getbook.value)">Get Book</button><br>
+  		<label>Enter Author ID to Get:</label><br>
+  		<input type="text" id="getauthor" name = "getauthor" ><br>
+  		<button type = "button" onclick="handleGetAuthor(getauthor.value)">Get Author</button><br>
+  		<label>Enter a Query to Get:</label><br>
+  		<input type="text" id="getquery" name = "getquery" ><br>
+  		<button type = "button" onclick="handleGetQuery(getquery.value)">Get Query</button><br>
+  		<label>Enter a Book ID to update:</label><br>
+  		<input type="text" id="putBook" name = "putBook" ><br>
+  		<label>Enter a JSON object with fields to update:</label><br>
+  		<input type="text" id="putBookBody" name = "putBookBody" ><br>
+  		<button type = "button" onclick="handlePutBook(putBook.value, putBookBody.value)">Put a Book</button><br>
+  		<label>Enter an Author ID to update:</label><br>
+  		<input type="text" id="putA" name = "putA" ><br>
+  		<label>Enter a JSON object with fields to update:</label><br>
+  		<input type="text" id="putABody" name = "putABody" ><br>
+  		<button type = "button" onclick="handlePutAuthor(putA.value, putABody.value)">Put an Author</button><br>
+  		<label>Enter a Book JSON Object to insert:</label><br>
+  		<input type="text" id="postB" name = "postB" ><br>
+  		<button type = "button" onclick="handlePostBook(postB.value)">Insert a Book</button><br>
+  		<label>Enter an Author JSON Object to insert:</label><br>
+  		<input type="text" id="postA" name = "postA" ><br>
+  		<button type = "button" onclick="handlePostBook(postA.value)">Insert a Book</button><br>
+  		<label>Enter a Book ID to Delete:</label><br>
+  		<input type="text" id="delB" name = "delB" ><br>
+  		<button type = "button" onclick="handleDeleteBook(delB.value)">Delete a Book</button><br>
+  		<label>Enter an Author ID to Delete:</label><br>
+  		<input type="text" id="delA" name = "delA" ><br>
+  		<button type = "button" onclick="handleDeleteAuthor(delA.value)">Delete an Author</button><br>
+  		
+  	</form>
+  	<h1>  </h1>
+  	<div id = "app"></div>
+  	</body>
+  	<script src="{{ url_for('static', filename="/script.js") }}"></script>
+</html>

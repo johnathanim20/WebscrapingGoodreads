@@ -12,7 +12,7 @@ def url_in_robots_file(url):
     Returns true if there is a URL given that matches a line
     in the robots.txt but returns false otherwise.
     """
-    file = open('robots.txt', 'r')
+    file = open('C:\\Users\\johna\\fa21-cs242-assignment-2\\src\\robots.txt', 'r')
     while True:
         line = file.readline()
         if line == "":

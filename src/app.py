@@ -6,7 +6,8 @@ import requests
 import json
 import pymongo
 import argparse
-from flask import Flask, request, jsonify
+import jyserver.Flask as jsf
+from flask import Flask, request, jsonify, render_template
 from database import get_key, database_book_handler, database_author_handler
 from Parser import parseAfterColon, parseAfterLessThan
 from Parser import parseAfterNOT, parseAfterGreaterThan
@@ -17,7 +18,7 @@ from Parser import or_colon, or_quotes, and_colon, and_quotes
 from scraper import scrape_book_page, scrape_author_page
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 
 def show_output(arr):
     """
@@ -54,6 +55,7 @@ def show_output(arr):
         if len(output) == 0:
             return None
         return jsonify(output)
+
 @app.route('/search', methods=['GET'])
 def get_query():
     """
@@ -400,6 +402,12 @@ def delete_author():
     output = {'time' : datetime.datetime.now(), 'status' : 400,
                   'message' : 'No scrape was performed due to invalid input'}
     return jsonify(output)
+
+@app.route('/')
+def home_page():
+    return render_template('index.html')
+
+
 def main():
     """
     Main function to handle command-line interface
@@ -457,5 +465,5 @@ def main():
             response = requests.delete('http://127.0.0.1:5000/author', params={'id': result})
             print(response.text)
 if __name__ == "__main__":
-    main()
+    app.run(debug=False)
         

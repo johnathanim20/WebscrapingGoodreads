@@ -61,7 +61,7 @@ def handleColonCommand(string, string2, search):
     ret_arr1 = []
     if string2 == 'book':
         for book in books.find():
-            if search in book[string]:
+            if search in str(book[string]):
                 print("The search value has been found at : " + book['book_url'])
                 ret_arr1.append(book)
     elif string2 == 'author':

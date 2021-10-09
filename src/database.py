@@ -9,7 +9,7 @@ def get_key():
     """
     This function gets the unique key to access my MongoDB database collection
     """
-    load_dotenv("./key.env")
+    load_dotenv('C:\\Users\\johna\\fa21-cs242-assignment-2\\src\\key.env')
     return os.getenv("SECRET_KEY")
 def handle_read_books(json_file):
     """

@@ -82,43 +82,46 @@ if __name__ == "__main__":
         if args.Number_Of_Books > 200 and args.Number_Of_Authors > 50:
             print("Scraping more than 200 Books and 50 Authors can damage the scraped website")
     
-        save_book_urls = []
+        
         similar_book_urls = []
-        save_author_urls = []
         similar_author_urls = []
         count = 0
         num_books = 0
         num_authors = 0
         url = args.Book_URL
         while True:
-            save_book_urls.append(url)
+            similar_book_urls.append(url)
             print('Begin scraping a page')
             ret_arr = scrape_book_page(url)
-            if ret_arr is None:
-                continue
+            #===================================================================
+            # if ret_arr is None:
+            #     continue
+            #===================================================================
             database_book_handler(ret_arr)
             [similar_book_urls.append(x) for x in ret_arr[10] if x not in similar_book_urls]
             num_books += 1
-            time.sleep(10)
+            time.sleep(15)
             print('Ended this scrape')
             url = similar_book_urls[count]
             count += 1
             if (num_books == args.Number_Of_Books):
-                break;
+                break
         url = ret_arr[4]
         count = 0
         while True:
-            save_author_urls.append(url)
+            similar_author_urls.append(url)
             print('Begin scraping a page')
             ret_arr2 = scrape_author_page(url)
-            if ret_arr2 is None:
-                continue
+            #===================================================================
+            # if ret_arr2 is None:
+            #     continue
+            #===================================================================
             database_author_handler(ret_arr2)
             [similar_author_urls.append(x) for x in ret_arr[7] if x not in similar_author_urls]
             num_authors += 1
-            time.sleep(10)
+            time.sleep(15)
             print('Ended this scrape') 
-            url = similar_book_urls[count]
+            url = similar_author_urls[count]
             count += 1
             if (num_authors == args.Number_Of_Authors):
                 break
