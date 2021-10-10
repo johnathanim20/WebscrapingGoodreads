@@ -3,40 +3,39 @@ function handleGetBook(bookID) {
 	console.log(u)
 	fetch(u)
 		.then(response => {
+		console.log(response)
 			if (!response.ok) {
 				throw Error("ERROR");
 			}
 			return response.json();
     	}).then(data=> {
-			console.log(data);
-			const html = data.map(err => {
-				var st = '<p>Error : ' + err.message + '</p>'
-				return st
-			});
-			var similarBooks = data.map(similarB => {
-				temp = []
-				for (x = 0; x < similarB.similar_books.length; x++) {
-					temp.push(`<p>similar_book : ` + similarB.similar_books[x]  + `</p>`)
-				}
-                return temp
-            });
-			html = data.map(book => {
-				var s = '<p>book_url : ' + book.book_url + '</p>'
-				+ '<p>title : ' + book.title + '</p>'
-				+ '<p>book_id : ' + book.book_id + '</p>'
-				+ '<p>ISBN : ' + book.ISBN + '</p>'
-				+ '<p>author_url : ' + book.author_url + '</p>'
-				+ '<p>author : ' + book.author + '</p>'
-				+ '<p>rating : ' + book.rating + '</p>'
-				+ '<p>rating_count : ' + book.rating_count + '</p>'
-				+ '<p>review_count : ' + book.review_count + '</p>'
-				+ '<p>image_url : ' + book.image_url + '</p>'
-				+ '<p>book_id : ' + book.book_id + '</p>';
-				return s + temp;
-			});
+    		console.log(data)
+				var similarBooks = data.map(similarB => {
+					temp = []
+					for (x = 0; x < similarB.similar_books.length; x++) {
+						temp.push(`<p>similar_book : ` + similarB.similar_books[x]  + `</p>`)
+					}
+	                return temp
+	            });
+				const html = data.map(book => {
+					var s = '<p>book_url : ' + book.book_url + '</p>'
+					+ '<p>title : ' + book.title + '</p>'
+					+ '<p>book_id : ' + book.book_id + '</p>'
+					+ '<p>ISBN : ' + book.ISBN + '</p>'
+					+ '<p>author_url : ' + book.author_url + '</p>'
+					+ '<p>author : ' + book.author + '</p>'
+					+ '<p>rating : ' + book.rating + '</p>'
+					+ '<p>rating_count : ' + book.rating_count + '</p>'
+					+ '<p>review_count : ' + book.review_count + '</p>'
+					+ '<p>image_url : ' + book.image_url + '</p>'
+					+ '<p>book_id : ' + book.book_id + '</p>';
+					return s + temp;
+				});
+		
 			document.querySelector('#app').insertAdjacentHTML('afterbegin', html);
 		}).catch(error=> {
-			console.log(error);
+			const returnObject = '<p>Error: ' + 'Not a valid book' + '</p>'
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
 		});	
 }
 
@@ -76,7 +75,8 @@ function handleGetAuthor(authorID) {
 			console.log(html)
 			document.querySelector('#app').insertAdjacentHTML('afterbegin', html);
 		}).catch(error=> {
-			console.log(error);
+			const returnObject = '<p>Error: ' + 'Not a valid author' + '</p>'
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
 		});	
 }
 
@@ -145,15 +145,21 @@ function handleGetQuery(querystring) {
 			}
 			
 			}).catch(error=> {
-				console.log(error);
+				const returnObject = '<p>Error: ' + 'Not a valid query' + '</p>'
+				document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
 			});	
 }
 
 function handlePutBook(bookID, inp) {
 	var u = "http://127.0.0.1:5000/book?id=" + bookID
 	console.log(inp)
-	console.log(u)
-	var s = JSON.parse(inp)
+	try {
+		var s = JSON.parse(inp)
+	} catch (err) {
+		const returnObject = '<p>PUT Failed: ' + 'Book PUT request Failed' + '</p>'
+		document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+		return;
+	}
 	const putMethod = {
 		method : "PUT",
 		headers: {
@@ -162,16 +168,39 @@ function handlePutBook(bookID, inp) {
 		body: JSON.stringify(s)
 	}
 	fetch(u, putMethod)
-	.then(response => response.json())
-	.then(data => console.log(data))
-	.catch(error => console.log(error))
+	.then(response => {
+			if (!response.ok) {
+				throw Error("ERROR");
+			}
+			return response.json();
+		}).then(data=> {
+			const success = data.map(message => {
+				var s = '<p>PUT Book Successful </p>'
+				return s;
+			});
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', success)
+		})
+		.catch(error => {
+			if (error instanceof(SyntaxError)) {
+				var s = '<p>PUT Book Successful </p>'
+				return document.querySelector('#app').insertAdjacentHTML('afterbegin', s)
+			} else {
+				const returnObject = '<p>PUT Failed: ' + 'Book PUTT request Failed' + '</p>'
+				document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+			}
+		});
 }
 
 function handlePutAuthor(authorID, inp) {
 	var u = "http://127.0.0.1:5000/author?id=" + authorID
 	console.log(inp)
-	console.log(u)
-	var s = JSON.parse(inp)
+	try {
+		var s = JSON.parse(inp)
+	} catch {
+		const returnObject = '<p>PUT Failed: ' + 'Author PUT request Failed' + '</p>'
+		document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+		return;
+	}
 	const putMethod = {
 		method : "PUT",
 		headers: {
@@ -180,15 +209,32 @@ function handlePutAuthor(authorID, inp) {
 		body: JSON.stringify(s)
 	}
 	fetch(u, putMethod)
-	.then(response => response.json())
-	.then(data => console.log(data))
-	.catch(error => console.log(error))
+	.then(response => {
+			if (!response.ok) {
+				throw Error("ERROR");
+			}
+			return response.json();
+		}).then(data=> {
+			
+			var s = '<p>PUT Author Successful </p>'
+			return s;
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', success)
+		})
+		.catch(error => {const returnObject = '<p>PUT Failed: ' + 'Author PUT request Failed' + '</p>'
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+	});
 }
 
 function handlePostBook(inp) {
 	var u = "http://127.0.0.1:5000/books"
 	console.log(inp)
-	var s = JSON.parse(inp)
+	try {
+		var s = JSON.parse(inp)
+	} catch {
+		const returnObject = '<p>POST Failed: ' + 'Author POST request Failed' + '</p>'
+		document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+		return;
+	}
 	const postMethod = {
 		method : "POST",
 		headers: {
@@ -197,15 +243,34 @@ function handlePostBook(inp) {
 		body: JSON.stringify(s)
 	}
 	fetch(u, postMethod)
-	.then(response => response.json())
-	.then(data => console.log(data))
-	.catch(error => console.log(error))
+	.then(response => {
+			if (!response.ok) {
+				throw Error("ERROR");
+			}
+			return response.json();
+		}).then(data=> {
+			const success = data.map(message => {
+				var s = '<p>POST Book Successful </p>'
+				return s;
+			});
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', success)
+		})
+		.catch(error => {const returnObject = '<p>POST Failed: ' + 'Book POST request Failed' + '</p>'
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+	});
 }
 
 function handlePostAuthor(inp) {
 	var u = "http://127.0.0.1:5000/authors"
 	console.log(inp)
-	var s = JSON.parse(inp)
+	try {
+		var s = JSON.parse(inp)
+	} catch {
+		const returnObject = '<p>POST Failed: ' + 'Author POST request Failed' + '</p>'
+		document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+		return;
+	}
+	
 	const postMethod = {
 		method : "POST",
 		headers: {
@@ -214,9 +279,21 @@ function handlePostAuthor(inp) {
 		body: JSON.stringify(s)
 	}
 	fetch(u, postMethod)
-	.then(response => response.json())
-	.then(data => console.log(data))
-	.catch(error => console.log(error))
+	.then(response => {
+			if (!response.ok) {
+				throw Error("ERROR");
+			}
+			return response.json();
+		}).then(data=> {
+			const success = data.map(message => {
+				var s = '<p>POST Author Successful </p>'
+				return s;
+			});
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', success)
+		})
+		.catch(error => {const returnObject = '<p>POST Failed: ' + 'Author POST request Failed' + '</p>'
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+	});
 }
 
 function handleDeleteBook(bookID) {
@@ -226,9 +303,23 @@ function handleDeleteBook(bookID) {
 		method : "DELETE",
 	}
 	fetch(u, deleteMethod)
-	.then(res => res.text())
-	.then(res => console.log(res))
+	.then(response => {
+			if (!response.ok) {
+				throw Error("ERROR");
+			}
+			return response.json();
+		}).then(data=> {
+			const success = data.map(message => {
+				var s = '<p>Delete Book Failed: ' + message.message + '</p>'
+				return s;
+			});
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', success)
+		})
+		.catch(error => {const returnObject = '<p>Success: ' + 'Book Delete request Successful' + '</p>'
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+	});
 }
+
 function handleDeleteAuthor(authorID) {
 	var u = "http://127.0.0.1:5000/author?id=" + authorID
 	console.log(u)
@@ -236,6 +327,19 @@ function handleDeleteAuthor(authorID) {
 		method : "DELETE",
 	}
 	fetch(u, deleteMethod)
-	.then(res => res.text())
-	.then(res => console.log(res))
+	.then(response => {
+			if (!response.ok) {
+				throw Error("ERROR");
+			}
+			return response.json();
+		}).then(data=> {
+			const success = data.map(message => {
+				var s = '<p>Delete Author Failed: ' + message.message + '</p>'
+				return s;
+			});
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', success)
+		})
+		.catch(error => {const returnObject = '<p>Success: ' + 'Author Delete request Successful' + '</p>'
+			document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+	});
 }
