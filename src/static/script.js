@@ -185,18 +185,19 @@ function handlePutBook(bookID, inp) {
 				var s = '<p>PUT Book Successful </p>'
 				return document.querySelector('#app').insertAdjacentHTML('afterbegin', s)
 			} else {
-				const returnObject = '<p>PUT Failed: ' + 'Book PUTT request Failed' + '</p>'
+				const returnObject = '<p>PUT Failed: ' + 'Book PUT request Failed' + '</p>'
 				document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
 			}
 		});
 }
+
 
 function handlePutAuthor(authorID, inp) {
 	var u = "http://127.0.0.1:5000/author?id=" + authorID
 	console.log(inp)
 	try {
 		var s = JSON.parse(inp)
-	} catch {
+	} catch (err) {
 		const returnObject = '<p>PUT Failed: ' + 'Author PUT request Failed' + '</p>'
 		document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
 		return;
@@ -215,13 +216,20 @@ function handlePutAuthor(authorID, inp) {
 			}
 			return response.json();
 		}).then(data=> {
-			
-			var s = '<p>PUT Author Successful </p>'
-			return s;
+			const success = data.map(message => {
+				var s = '<p>PUT Author Successful </p>'
+				return s;
+			});
 			document.querySelector('#app').insertAdjacentHTML('afterbegin', success)
 		})
-		.catch(error => {const returnObject = '<p>PUT Failed: ' + 'Author PUT request Failed' + '</p>'
+		.catch(error => {
+		if (error instanceof(SyntaxError)) {
+			var s = '<p>PUT Book Successful </p>'
+			return document.querySelector('#app').insertAdjacentHTML('afterbegin', s)
+		} else {
+			const returnObject = '<p>PUT Failed: ' + 'Author PUT request Failed' + '</p>'
 			document.querySelector('#app').insertAdjacentHTML('afterbegin', returnObject);
+		}
 	});
 }
 
