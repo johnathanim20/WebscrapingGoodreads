@@ -11,3 +11,6 @@ The CommandLine module is where the program sets up the command line interface f
 and give valid inputs. The user should always supply at a minimum a starting book URL and the number of authors   
 and books to scrape. There is a also a test module that checks if helper functions used for the base functionality  
 are working as expected. Part 1 of this project has been completed as of 9/26/21.
+Extra classes and files such as app.py and other js and html files have been added to build on prior functionality  
+from part 1 and now the project can support API CRUD requests for part 2. Part 3 functionality has also  
+been completed and is handled in the templates and static folders.
